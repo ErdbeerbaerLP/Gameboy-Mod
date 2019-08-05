@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "gbmod",
+    "name": "GameBoy Mod",
+    "description": "Adds an functioning Gameboy to Minecraft.\nComes with some test roms and homebrew games.\nDoes NOT include official games!\nIf you want some, add them to config/gameboy-roms",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["ErdbeerbaerLP"],
+    "credits": "Trekawek for the Coffee GB emulator running within this mod: https://github.com/trekawek/coffee-gb ",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

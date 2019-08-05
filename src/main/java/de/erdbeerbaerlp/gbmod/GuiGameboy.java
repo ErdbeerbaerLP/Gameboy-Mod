@@ -1,0 +1,117 @@
+package de.erdbeerbaerlp.gbmod;
+
+import de.erdbeerbaerlp.guilib.components.Button;
+import de.erdbeerbaerlp.guilib.components.Slider;
+import de.erdbeerbaerlp.guilib.components.ToggleButton;
+import de.erdbeerbaerlp.guilib.gui.BetterGuiScreen;
+import eu.rekawek.coffeegb.controller.ButtonListener;
+import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
+
+
+@SuppressWarnings("FieldCanBeLocal")
+public class GuiGameboy extends BetterGuiScreen {
+
+    ComponentGameboyScreen screen;
+    Button btnReset;
+    Button btnStop;
+    Button btnStart;
+    private final ItemGameBoy gb;
+    public GuiGameboy(ItemGameBoy itemGameBoy) {
+        super();
+        this.gb = itemGameBoy;
+    }
+
+    /**
+     * Add your components here!
+     */
+    @Override
+    public void buildGui() {
+        screen = new ComponentGameboyScreen(0,0, gb);
+        btnStart = new Button(0,0,"Resume", Button.DefaultButtonIcons.PLAY);
+        btnReset = new Button(0,0,"Reset");
+        btnStop = new Button(0,0,"Pause",Button.DefaultButtonIcons.PAUSE);
+        btnReset.setClickListener(()->{
+            try {
+                gb.cap.getEmulator().reset();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        btnStart.setClickListener(()->{
+            try {
+
+                gb.cap.getEmulator().run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        btnStop.setClickListener(() -> gb.cap.getEmulator().stop());
+        /*btnSetRom.setClickListener(()->{
+            try{
+                gb.cap.getEmulator().switchRom(new File("./config/gameboy-roms/pokemon-debug-yellow/DebugYellow.gbc"));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });*/
+        addAllComponents(screen, btnReset, btnStart, btnStop);
+    }
+
+    /**
+     * Gets called often to e.g. update components postions
+     */
+    @Override
+    public void updateGui() {
+        screen.setPosition(width/2, height/2);
+        btnStop.setPosition(width/20, height/2);
+        btnStart.setPosition(btnStop.getX(), btnStop.getY()-btnStart.getHeight()-10);
+        btnReset.setPosition(btnStop.getX(), btnStop.getY()+btnStop.getHeight()+10);
+        //btnSetRom.setPosition(btnStop.getX(), btnStart.getY()-btnSetRom.getHeight()-10);
+    }
+
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
+
+    /**
+     * Should pressing ESC close the GUI?
+     */
+    @Override
+    public boolean doesEscCloseGui() {
+        return true;
+    }
+
+    @Override
+    public void handleKeyboardInput() throws IOException {
+        super.handleKeyboardInput();
+        final int key = Keyboard.getEventKey();
+        final ButtonListener.Button btn = getButton(key);
+        boolean press = Keyboard.isKeyDown(key);
+        if(btn != null)
+        if(press)
+            gb.cap.getEmulator().getJoypad().buttonPress(btn);
+        else
+            gb.cap.getEmulator().getJoypad().buttonRelease(btn);
+    }
+    private ButtonListener.Button getButton(int key){
+        if(key == Gbmod.keyGBRight.getKeyCode())
+            return ButtonListener.Button.RIGHT;
+        if(key == Gbmod.keyGBUp.getKeyCode())
+            return ButtonListener.Button.UP;
+        if(key == Gbmod.keyGBDown.getKeyCode())
+            return ButtonListener.Button.DOWN;
+        if(key == Gbmod.keyGBLeft.getKeyCode())
+            return ButtonListener.Button.LEFT;
+        if(key == Gbmod.keyGBA.getKeyCode())
+            return ButtonListener.Button.A;
+        if(key == Gbmod.keyGBB.getKeyCode())
+            return ButtonListener.Button.B;
+        if(key == Gbmod.keyGBStart.getKeyCode())
+            return ButtonListener.Button.START;
+        if(key == Gbmod.keyGBSelect.getKeyCode())
+            return ButtonListener.Button.SELECT;
+        return null;
+    }
+}

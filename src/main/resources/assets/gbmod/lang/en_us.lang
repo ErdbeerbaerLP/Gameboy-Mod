@@ -1,0 +1,11 @@
+key.gb.left=D-Pad Left
+key.gb.right=D-Pad Right
+key.gb.up=D-Pad Up
+key.gb.down=D-Pad Down
+key.gb.a=A Button
+key.gb.b=B Button
+key.gb.start=Start Button
+key.gb.select=Select Button
+category.gameboy=Gameboy
+item.gameboy.name=Gameboy
+item.cartridge-unknown.name=Unknown Cartridge
