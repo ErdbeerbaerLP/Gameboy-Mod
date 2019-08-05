@@ -3,9 +3,6 @@ package de.erdbeerbaerlp.gbmod;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.item.ItemMap;
-
-import java.awt.image.BufferedImage;
 
 public class ComponentGameboyScreen extends GuiComponent {
 
@@ -16,7 +13,7 @@ public class ComponentGameboyScreen extends GuiComponent {
     protected ComponentGameboyScreen(int x, int y, ItemGameBoy gb) {
         super(x, y, 0, 0);
         this.gb = gb;
-        img = new DynamicTexture(gb.getEmu().getDisplay().img);
+        img = new DynamicTexture(160, 114);
         imgwidth = 160;
         imgheight = 144;
     }
@@ -30,6 +27,7 @@ public class ComponentGameboyScreen extends GuiComponent {
      */
     @Override
     public void draw(int mouseX, int mouseY, float partial) {
+        if (gb == null) return;
         if(gb.cap.getEmulator() != null && gb.cap.getEmulator().getDisplay() != null  && gb.cap.getEmulator().getDisplay().img != null)
             gb.cap.getEmulator().getDisplay().img.getRGB(0, 0, imgwidth, imgheight, img.getTextureData(), 0, imgwidth);
         img.updateDynamicTexture();
