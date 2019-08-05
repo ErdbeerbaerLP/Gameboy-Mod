@@ -12,7 +12,7 @@ public class Cartridge extends Item {
     private ROM rom;
     private int index = 0;
     public Cartridge() {
-        setRegistryName("modid", "cartridge");
+        setRegistryName(Gbmod.MOD_ID, "cartridge");
         setTranslationKey("cartridge-unknown");
     }
 
