@@ -6,16 +6,19 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 
 public class ComponentGameboyScreen extends GuiComponent {
 
-    private final ItemGameBoy gb;
+    private final int imgwidth, imgheight;
     final DynamicTexture img;
-    final int imgwidth,imgheight;
+    private CapabilityGameBoy gb;
     @SuppressWarnings("SameParameterValue")
-    protected ComponentGameboyScreen(int x, int y, ItemGameBoy gb) {
+    protected ComponentGameboyScreen(int x, int y) {
         super(x, y, 0, 0);
-        this.gb = gb;
-        img = new DynamicTexture(160, 114);
         imgwidth = 160;
         imgheight = 144;
+        img = new DynamicTexture(imgwidth, imgheight);
+    }
+
+    public void setGb(CapabilityGameBoy gb) {
+        this.gb = gb;
     }
 
     /**
@@ -27,9 +30,9 @@ public class ComponentGameboyScreen extends GuiComponent {
      */
     @Override
     public void draw(int mouseX, int mouseY, float partial) {
-        if (gb == null) return;
-        if(gb.cap.getEmulator() != null && gb.cap.getEmulator().getDisplay() != null  && gb.cap.getEmulator().getDisplay().img != null)
-            gb.cap.getEmulator().getDisplay().img.getRGB(0, 0, imgwidth, imgheight, img.getTextureData(), 0, imgwidth);
+        if (gb == null || gb.getEmulator().getDisplay() == null) return;
+        if (gb.getEmulator() != null && gb.getEmulator().getDisplay() != null && gb.getEmulator().getDisplay().img != null)
+            gb.getEmulator().getDisplay().img.getRGB(0, 0, imgwidth, imgheight, img.getTextureData(), 0, imgwidth);
         img.updateDynamicTexture();
         Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getDynamicTextureLocation("gbmod_gameboyScreen", img));
         drawModalRectWithCustomSizedTexture(getX() - imgwidth / 2, getY() - imgheight / 2, 0, 0, imgwidth, imgheight, imgwidth, imgheight);

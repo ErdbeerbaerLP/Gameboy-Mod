@@ -2,14 +2,11 @@ package eu.rekawek.coffeegb.gui;
 
 import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.GameboyOptions;
-import eu.rekawek.coffeegb.controller.Controller;
 import eu.rekawek.coffeegb.controller.Joypad;
 import eu.rekawek.coffeegb.cpu.SpeedMode;
 import eu.rekawek.coffeegb.debug.Console;
-import eu.rekawek.coffeegb.gpu.Display;
 import eu.rekawek.coffeegb.memory.cart.Cartridge;
 import eu.rekawek.coffeegb.serial.SerialEndpoint;
-import eu.rekawek.coffeegb.sound.SoundOutput;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,25 +20,15 @@ import java.util.Set;
 public class Emulator {
 
     private static final int SCALE = 2;
-
-    private GameboyOptions options;
-
-    private Cartridge rom;
-
-    private AudioSystemSoundOutput sound;
-
-    private SwingDisplay display;
-
     private final SwingController controller;
-
     private final SerialEndpoint serialEndpoint;
-
     private final SpeedMode speedMode;
-
-    private Gameboy gameboy;
-
     private final Optional<Console> console;
-
+    private GameboyOptions options;
+    private Cartridge rom;
+    private AudioSystemSoundOutput sound;
+    private SwingDisplay display;
+    private Gameboy gameboy;
     private JFrame mainWindow;
 
     public Emulator(String[] args, Properties properties) throws IOException {
@@ -52,19 +39,15 @@ public class Emulator {
         console = options.isDebug() ? Optional.of(new Console()) : Optional.empty();
         console.map(Thread::new).ifPresent(Thread::start);
 
-        if (options.isHeadless()) {
-            sound = null;
-            display = null;
-            controller = null;
-            gameboy = new Gameboy(options, rom, Display.NULL_DISPLAY, Controller.NULL_CONTROLLER, SoundOutput.NULL_OUTPUT, serialEndpoint, console);
-        } else {
-            sound = new AudioSystemSoundOutput();
-            display = new SwingDisplay(SCALE);
-            controller = new SwingController(properties);
-            gameboy = new Gameboy(options, rom, display, controller, sound, serialEndpoint, console);
-        }
+
+        sound = new AudioSystemSoundOutput();
+        display = new SwingDisplay(SCALE);
+        controller = new SwingController(properties);
+        gameboy = new Gameboy(options, rom, display, controller, sound, serialEndpoint, console);
+
         console.ifPresent(c -> c.init(gameboy));
     }
+
     public Emulator() {
         final Properties prop = Main.loadProperties();
         this.options = new GameboyOptions(null);
@@ -79,10 +62,6 @@ public class Emulator {
         console.ifPresent(c -> c.init(gameboy));
     }
 
-    public SpeedMode getSpeedControls() {
-        return speedMode;
-    }
-
     private static GameboyOptions parseArgs(String[] args) {
         if (args.length == 0) {
             GameboyOptions.printUsage(System.out);
@@ -90,7 +69,7 @@ public class Emulator {
         }
         try {
             return createGameboyOptions(args);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             System.err.println();
             GameboyOptions.printUsage(System.err);
@@ -121,8 +100,12 @@ public class Emulator {
         return new GameboyOptions(romFile, params, shortParams);
     }
 
+    public SpeedMode getSpeedControls() {
+        return speedMode;
+    }
+
     public void run() throws Exception {
-        if(this.isRunning()) return;
+        if (this.isRunning()) return;
         if (options.isHeadless()) {
             gameboy.run();
         } else {
@@ -132,33 +115,39 @@ public class Emulator {
             SwingUtilities.invokeLater(this::startGui);
         }
     }
+
     public void reset() throws Exception {
         stop();
         display = new SwingDisplay(SCALE);
         switchRom(rom.getFile(), true);
         run();
     }
-    public void stop(){
-        if(gameboy != null) {
+
+    public void stop() {
+        if (gameboy != null) {
             display.stop();
             gameboy.stop();
         }
 
     }
-    public boolean isRunning(){
-        if(gameboy == null) return false;
+
+    public boolean isRunning() {
+        if (gameboy == null) return false;
         return gameboy.isRunning();
     }
+
     public void switchRom(File f, boolean hardSwitch) throws IOException {
         options = new GameboyOptions(f);
         rom = new Cartridge(options);
-        if(gameboy == null || hardSwitch)
+        if (gameboy == null || hardSwitch)
             gameboy = new Gameboy(options, rom, display, controller, sound, serialEndpoint, console);
         else gameboy.setRom(rom);
     }
-    public Joypad getJoypad(){
+
+    public Joypad getJoypad() {
         return gameboy.getJoypad();
     }
+
     public SwingDisplay getDisplay() {
         return display;
     }
@@ -180,6 +169,7 @@ public class Emulator {
         new Thread(display).start();
         new Thread(gameboy).start();
     }
+
     private void stopGui() {
         display.stop();
         gameboy.stop();

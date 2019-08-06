@@ -9,3 +9,6 @@ key.gb.select=Select Button
 category.gameboy=Gameboy
 item.gameboy.name=Gameboy
 item.cartridge-unknown.name=Unknown Cartridge
+
+item.gameboy.tooltip.1=Rom: %s
+item.gameboy.tooltip.2=Rom Index: %s

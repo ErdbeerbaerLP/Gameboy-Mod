@@ -1,6 +1,7 @@
 package de.erdbeerbaerlp.gbmod;
 
 import eu.rekawek.coffeegb.memory.cart.Cartridge;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +13,7 @@ public final class ROM {
     public ROM(File romFile) throws IOException {
         this.romFile = romFile;
         this.type = Cartridge.getRomType(romFile);
-        this.romName = romFile.getName();
+        this.romName = FilenameUtils.getBaseName(romFile.getName());
     }
 
     public File getRomFile() {

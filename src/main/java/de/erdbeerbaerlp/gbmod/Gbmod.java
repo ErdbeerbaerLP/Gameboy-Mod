@@ -1,27 +1,27 @@
 package de.erdbeerbaerlp.gbmod;
 
-import eu.rekawek.coffeegb.gui.Emulator;
 import net.minecraft.block.Block;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.io.FilenameUtils;
 import org.lwjgl.input.Keyboard;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Mod(
         modid = Gbmod.MOD_ID,
@@ -76,7 +76,7 @@ public class Gbmod {
     //Capabilities
     @CapabilityInject(IGameboy.class)
     public static Capability<IGameboy> CAP_GB = null;
-
+    public static final ResourceLocation CAP_GB_RL = new ResourceLocation(MOD_ID, "capability.gameboy");
 
     /**
      * This is the first initialization event. Register tile entities here.
@@ -150,5 +150,6 @@ public class Gbmod {
         @SubscribeEvent
         public static void addBlocks(RegistryEvent.Register<Block> event) {
         }
+
     }
 }

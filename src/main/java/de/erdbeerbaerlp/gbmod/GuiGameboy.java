@@ -1,8 +1,6 @@
 package de.erdbeerbaerlp.gbmod;
 
 import de.erdbeerbaerlp.guilib.components.Button;
-import de.erdbeerbaerlp.guilib.components.Slider;
-import de.erdbeerbaerlp.guilib.components.ToggleButton;
 import de.erdbeerbaerlp.guilib.gui.BetterGuiScreen;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import org.lwjgl.input.Keyboard;
@@ -17,10 +15,12 @@ public class GuiGameboy extends BetterGuiScreen {
     Button btnReset;
     Button btnStop;
     Button btnStart;
-    private final ItemGameBoy gb;
-    public GuiGameboy(ItemGameBoy itemGameBoy) {
+    private final CapabilityGameBoy gb;
+
+    public GuiGameboy(CapabilityGameBoy cap) {
         super();
-        this.gb = itemGameBoy;
+        this.gb = cap;
+        screen.setGb(cap);
     }
 
     /**
@@ -28,13 +28,13 @@ public class GuiGameboy extends BetterGuiScreen {
      */
     @Override
     public void buildGui() {
-        screen = new ComponentGameboyScreen(0,0, gb);
+        screen = new ComponentGameboyScreen(0, 0);
         btnStart = new Button(0,0,"Resume", Button.DefaultButtonIcons.PLAY);
         btnReset = new Button(0,0,"Reset");
         btnStop = new Button(0,0,"Pause",Button.DefaultButtonIcons.PAUSE);
         btnReset.setClickListener(()->{
             try {
-                gb.cap.getEmulator().reset();
+                gb.getEmulator().reset();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -42,12 +42,12 @@ public class GuiGameboy extends BetterGuiScreen {
         btnStart.setClickListener(()->{
             try {
 
-                gb.cap.getEmulator().run();
+                gb.getEmulator().run();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-        btnStop.setClickListener(() -> gb.cap.getEmulator().stop());
+        btnStop.setClickListener(() -> gb.getEmulator().stop());
         /*btnSetRom.setClickListener(()->{
             try{
                 gb.cap.getEmulator().switchRom(new File("./config/gameboy-roms/pokemon-debug-yellow/DebugYellow.gbc"));
@@ -91,9 +91,9 @@ public class GuiGameboy extends BetterGuiScreen {
         boolean press = Keyboard.isKeyDown(key);
         if(btn != null)
         if(press)
-            gb.cap.getEmulator().getJoypad().buttonPress(btn);
+            gb.getEmulator().getJoypad().buttonPress(btn);
         else
-            gb.cap.getEmulator().getJoypad().buttonRelease(btn);
+            gb.getEmulator().getJoypad().buttonRelease(btn);
     }
     private ButtonListener.Button getButton(int key){
         if(key == Gbmod.keyGBRight.getKeyCode())
