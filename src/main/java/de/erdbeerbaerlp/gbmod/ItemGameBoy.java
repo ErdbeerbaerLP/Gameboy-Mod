@@ -56,6 +56,14 @@ public class ItemGameBoy extends Item {
     }
 
     @Override
+    public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player) {
+        if (player.world.isRemote) {
+            getCap(item).getEmulator().stop();
+        }
+        return super.onDroppedByPlayer(item, player);
+    }
+
+    @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         final CapabilityGameBoy cap = getCap(stack);
         tooltip.add(I18n.format("item.gameboy.tooltip.1", flagIn.isAdvanced() ? cap.getRom().getRomFile().getName() : cap.getRom().getRomName()));

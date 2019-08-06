@@ -36,17 +36,26 @@ public class Gbmod {
     public static final String VERSION = "1.0.0";
     private static final File ROMS_DIR = new File("./config/gameboy-roms");
     static final List<ROM> LOADED_ROMS = new ArrayList<>();
+
     public Gbmod(){
+        reloadRoms();
+    }
+
+    /**
+     * Reloads the rom directory...
+     */
+    public static void reloadRoms() {
         if(!ROMS_DIR.exists()) //noinspection ResultOfMethodCallIgnored
             ROMS_DIR.mkdirs();
         System.out.println("Loading ROMs...");
+        LOADED_ROMS.clear();
         try {
             for(String file : Objects.requireNonNull(ROMS_DIR.list())){
                 final File romFile = new File(ROMS_DIR, file);
                 if(!romFile.isDirectory()){
                     final String ext = FilenameUtils.getExtension(romFile.getName());
                     if(ext.equals("gb")||ext.equals("gbc")||ext.equals("rom"))
-                    LOADED_ROMS.add(new ROM(romFile));
+                        LOADED_ROMS.add(new ROM(romFile));
                 }
             }
         } catch (Exception e) {
@@ -54,6 +63,7 @@ public class Gbmod {
         }
         System.out.println("Loaded "+LOADED_ROMS.size()+" ROMs");
     }
+
     /**
      * This is the instance of your mod as created by Forge. It will never be null.
      */
@@ -92,6 +102,7 @@ public class Gbmod {
         ClientRegistry.registerKeyBinding(keyGBRight);
         ClientRegistry.registerKeyBinding(keyGBStart);
         ClientRegistry.registerKeyBinding(keyGBSelect);
+        //noinspection deprecation
         CapabilityManager.INSTANCE.register(IGameboy.class, new CapabilityGameBoy.CapabilityGameBoyStorage(), CapabilityGameBoy.class);
     }
 
