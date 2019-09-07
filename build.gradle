@@ -40,8 +40,6 @@ configurations{
 }
 dependencies {
     embed 'junit:junit:4.12'
-    embed group: 'org.slf4j', name: 'slf4j-api', version: '1.7.16'
-    embed group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.16'
     deobfCompile 'com.github.ErdbeerbaerLP:ErdbeerbaerGuiLib:0.1.1'
 
 }

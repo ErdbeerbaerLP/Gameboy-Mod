@@ -4,14 +4,8 @@ import eu.rekawek.coffeegb.AddressSpace;
 import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.cpu.InterruptManager;
 import eu.rekawek.coffeegb.cpu.SpeedMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class SerialPort implements AddressSpace {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SerialPort.class);
 
     private final SerialEndpoint serialEndpoint;
 

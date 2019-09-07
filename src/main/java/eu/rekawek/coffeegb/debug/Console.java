@@ -11,19 +11,12 @@ import eu.rekawek.coffeegb.debug.command.ppu.ShowBackground;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class Console implements Runnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Console.class);
 
     private final Deque<CommandExecution> commandBuffer = new ArrayDeque<>();
 
@@ -72,7 +65,7 @@ public class Console implements Runnable {
                 System.err.println(e.getMessage());
             } catch (UserInterruptException e) {
             } catch (InterruptedException e) {
-                LOG.error("Interrupted", e);
+                System.err.println("Interrupted");
                 break;
             }
         }

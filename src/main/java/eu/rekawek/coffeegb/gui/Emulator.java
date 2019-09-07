@@ -127,6 +127,7 @@ public class Emulator {
         if (gameboy != null) {
             display.stop();
             gameboy.stop();
+            sound.stop();
         }
 
     }

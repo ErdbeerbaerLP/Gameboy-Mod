@@ -5,15 +5,9 @@ import eu.rekawek.coffeegb.GameboyOptions;
 import eu.rekawek.coffeegb.memory.BootRom;
 import eu.rekawek.coffeegb.memory.cart.battery.Battery;
 import eu.rekawek.coffeegb.memory.cart.battery.FileBattery;
-import eu.rekawek.coffeegb.memory.cart.type.Mbc1;
-import eu.rekawek.coffeegb.memory.cart.type.Mbc2;
-import eu.rekawek.coffeegb.memory.cart.type.Mbc3;
-import eu.rekawek.coffeegb.memory.cart.type.Mbc5;
-import eu.rekawek.coffeegb.memory.cart.type.Rom;
+import eu.rekawek.coffeegb.memory.cart.type.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,8 +35,6 @@ public class Cartridge implements AddressSpace {
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(Cartridge.class);
-
     private final AddressSpace addressSpace;
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -65,15 +57,13 @@ public class Cartridge implements AddressSpace {
         int[] rom = loadFile(file);
         CartridgeType type = CartridgeType.getById(rom[0x0147]);
         title = getTitle(rom);
-        LOG.debug("Cartridge {}, type: {}", title, type);
         gameboyType = GameboyTypeFlag.getFlag(rom[0x0143]);
         int romBanks = getRomBanks(rom[0x0148]);
         int ramBanks = getRamBanks(rom[0x0149]);
         if (ramBanks == 0 && type.isRam()) {
-            LOG.warn("RAM bank is defined to 0. Overriding to 1.");
+            System.err.println("RAM bank is defined to 0. Overriding to 1.");
             ramBanks = 1;
         }
-        LOG.debug("ROM banks: {}, RAM banks: {}", romBanks, ramBanks);
 
         Battery battery = Battery.NULL_BATTERY;
         if (type.isBattery() && options.isSupportBatterySaves()) {

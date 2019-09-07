@@ -6,15 +6,22 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTTagCompound> {
-    private final Emulator emu = new Emulator();
+    private Emulator emu;
     private int romIndex = -1;
     private ROM rom;
+
+    public void initEmulator() {
+        emu = new Emulator();
+        Gbmod.emus.add(this);
+    }
     @Override
     public Emulator getEmulator() {
         return emu;
@@ -32,7 +39,7 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
 
     @Override
     public void setRom(int rom) {
-        if (rom >= Gbmod.LOADED_ROMS.size())
+        if (rom >= Gbmod.LOADED_ROMS.size() || rom < 0)
             rom = 0;
         this.romIndex = rom;
         this.rom = Gbmod.LOADED_ROMS.get(romIndex);
@@ -65,6 +72,8 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
+        if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+            this.initEmulator();
         this.setRom(nbt.getInteger("romIndex"));
     }
 
@@ -93,6 +102,8 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
 
         @Override
         public void readNBT(Capability<IGameboy> capability, IGameboy instance, EnumFacing side, NBTBase nbt) {
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+                instance.initEmulator();
             instance.setRom(((NBTTagCompound) nbt).getInteger("romIndex"));
         }
     }

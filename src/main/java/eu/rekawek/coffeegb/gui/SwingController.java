@@ -3,8 +3,6 @@ package eu.rekawek.coffeegb.gui;
 import eu.rekawek.coffeegb.controller.ButtonListener;
 import eu.rekawek.coffeegb.controller.ButtonListener.Button;
 import eu.rekawek.coffeegb.controller.Controller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,7 +14,6 @@ import java.util.stream.Collectors;
 
 public class SwingController implements Controller, KeyListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SwingController.class);
 
     private ButtonListener listener;
 
@@ -46,7 +43,7 @@ public class SwingController implements Controller, KeyListener {
                     int value = field.getInt(null);
                     buttonToKey.put(button, value);
                 } catch (IllegalArgumentException | NoSuchFieldException | IllegalAccessException e) {
-                    LOG.error("Can't parse button configuration", e);
+                    //LOG.error("Can't parse button configuration", e);
                 }
             }
         }

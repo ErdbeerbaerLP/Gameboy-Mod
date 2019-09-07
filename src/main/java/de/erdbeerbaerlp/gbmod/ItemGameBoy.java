@@ -22,6 +22,7 @@ public class ItemGameBoy extends Item {
         setRegistryName(Gbmod.MOD_ID, "gameboy");
         setTranslationKey("gameboy");
         setMaxStackSize(1);
+        setCreativeTab(Gbmod.tab);
     }
 
     public static CapabilityGameBoy getCap(ItemStack is) {
@@ -36,7 +37,6 @@ public class ItemGameBoy extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-
         if(worldIn.isRemote){
             final CapabilityGameBoy cap = getCap(playerIn.getHeldItem(handIn));
             System.out.println(cap);
@@ -66,9 +66,11 @@ public class ItemGameBoy extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         final CapabilityGameBoy cap = getCap(stack);
+        if (cap == null || cap.getEmulator() == null || cap.getRom() == null) return;
         tooltip.add(I18n.format("item.gameboy.tooltip.1", flagIn.isAdvanced() ? cap.getRom().getRomFile().getName() : cap.getRom().getRomName()));
         if (flagIn.isAdvanced()) {
             tooltip.add(I18n.format("item.gameboy.tooltip.2", cap.getRomIndex()));
         }
     }
+
 }

@@ -3,17 +3,11 @@ package eu.rekawek.coffeegb.gui;
 import com.google.common.base.Preconditions;
 import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.sound.SoundOutput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.*;
 
 public class AudioSystemSoundOutput implements SoundOutput {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AudioSystemSoundOutput.class);
 
     private static final int SAMPLE_RATE = 22050;
 
@@ -31,15 +25,19 @@ public class AudioSystemSoundOutput implements SoundOutput {
 
     private int divider;
 
+    // Not YET used, but planned
+    public FloatControl volume;
+
     @Override
     public void start() {
         if (line != null) {
-            LOG.debug("Sound already started");
+            //LOG.debug("Sound already started");
             return;
         }
-        LOG.debug("Start sound");
+        //LOG.debug("Start sound");
         try {
             line = AudioSystem.getSourceDataLine(FORMAT);
+            //volume = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
             line.open(FORMAT, BUFFER_SIZE);
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
@@ -52,11 +50,13 @@ public class AudioSystemSoundOutput implements SoundOutput {
     @Override
     public void stop() {
         if (line == null) {
-            LOG.debug("Can't stop - sound wasn't started");
+            //System.out.println("Can't stop - sound wasn't started");
         }
-        LOG.debug("Stop sound");
-        line.drain();
-        line.stop();
+        //LOG.debug("Stop sound");
+        if (line != null) {
+            line.drain();
+            line.stop();
+        }
         line = null;
     }
 

@@ -96,21 +96,21 @@ public class GuiGameboy extends BetterGuiScreen {
             gb.getEmulator().getJoypad().buttonRelease(btn);
     }
     private ButtonListener.Button getButton(int key){
-        if(key == Gbmod.keyGBRight.getKeyCode())
+        if (key == ClientOnly.keyGBRight.getKeyCode())
             return ButtonListener.Button.RIGHT;
-        if(key == Gbmod.keyGBUp.getKeyCode())
+        if (key == ClientOnly.keyGBUp.getKeyCode())
             return ButtonListener.Button.UP;
-        if(key == Gbmod.keyGBDown.getKeyCode())
+        if (key == ClientOnly.keyGBDown.getKeyCode())
             return ButtonListener.Button.DOWN;
-        if(key == Gbmod.keyGBLeft.getKeyCode())
+        if (key == ClientOnly.keyGBLeft.getKeyCode())
             return ButtonListener.Button.LEFT;
-        if(key == Gbmod.keyGBA.getKeyCode())
+        if (key == ClientOnly.keyGBA.getKeyCode())
             return ButtonListener.Button.A;
-        if(key == Gbmod.keyGBB.getKeyCode())
+        if (key == ClientOnly.keyGBB.getKeyCode())
             return ButtonListener.Button.B;
-        if(key == Gbmod.keyGBStart.getKeyCode())
+        if (key == ClientOnly.keyGBStart.getKeyCode())
             return ButtonListener.Button.START;
-        if(key == Gbmod.keyGBSelect.getKeyCode())
+        if (key == ClientOnly.keyGBSelect.getKeyCode())
             return ButtonListener.Button.SELECT;
         return null;
     }

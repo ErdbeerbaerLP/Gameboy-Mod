@@ -1,14 +1,11 @@
 package eu.rekawek.coffeegb.memory.cart.type;
 
 import eu.rekawek.coffeegb.AddressSpace;
-import eu.rekawek.coffeegb.memory.cart.battery.Battery;
 import eu.rekawek.coffeegb.memory.cart.CartridgeType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.rekawek.coffeegb.memory.cart.battery.Battery;
 
 public class Mbc1 implements AddressSpace {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Mbc1.class);
 
     private static final int[] NINTENDO_LOGO = {
             0xCE, 0xED, 0x66, 0x66, 0xCC, 0x0D, 0x00, 0x0B, 0x03, 0x73, 0x00, 0x83, 0x00, 0x0C, 0x00, 0x0D,
@@ -70,26 +67,26 @@ public class Mbc1 implements AddressSpace {
             if (!ramWriteEnabled) {
                 battery.saveRam(ram);
             }
-            LOG.trace("RAM write: {}", ramWriteEnabled);
+            System.out.println("RAM write: " + ramWriteEnabled);
         } else if (address >= 0x2000 && address < 0x4000) {
-            LOG.trace("Low 5 bits of ROM bank: {}", (value & 0b00011111));
+            System.out.println("Low 5 bits of ROM bank: " + (value & 0b00011111));
             int bank = selectedRomBank & 0b01100000;
             bank = bank | (value & 0b00011111);
             selectRomBank(bank);
             cachedRomBankFor0x0000 = cachedRomBankFor0x4000 = -1;
         } else if (address >= 0x4000 && address < 0x6000 && memoryModel == 0) {
-            LOG.trace("High 2 bits of ROM bank: {}", ((value & 0b11) << 5));
+            System.out.println("High 2 bits of ROM bank: " + ((value & 0b11) << 5));
             int bank = selectedRomBank & 0b00011111;
             bank = bank | ((value & 0b11) << 5);
             selectRomBank(bank);
             cachedRomBankFor0x0000 = cachedRomBankFor0x4000 = -1;
         } else if (address >= 0x4000 && address < 0x6000 && memoryModel == 1) {
-            LOG.trace("RAM bank: {}", (value & 0b11));
+            System.out.println("RAM bank: " + (value & 0b11));
             int bank = value & 0b11;
             selectedRamBank = bank;
             cachedRomBankFor0x0000 = cachedRomBankFor0x4000 = -1;
         } else if (address >= 0x6000 && address < 0x8000) {
-            LOG.trace("Memory mode: {}", (value & 1));
+            System.out.println("Memory mode: " + (value & 1));
             memoryModel = value & 1;
             cachedRomBankFor0x0000 = cachedRomBankFor0x4000 = -1;
         } else if (address >= 0xa000 && address < 0xc000 && ramWriteEnabled) {
@@ -102,7 +99,7 @@ public class Mbc1 implements AddressSpace {
 
     private void selectRomBank(int bank) {
         selectedRomBank = bank;
-        LOG.trace("Selected ROM bank: {}", selectedRomBank);
+        System.out.println("Selected ROM bank: " + selectedRomBank);
     }
 
     @Override

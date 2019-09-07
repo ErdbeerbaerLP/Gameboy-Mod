@@ -1,21 +1,13 @@
 package eu.rekawek.coffeegb.memory.cart.battery;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class FileBattery implements Battery {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileBattery.class);
 
     private final File saveFile;
 

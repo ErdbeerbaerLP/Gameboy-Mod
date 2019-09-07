@@ -1,8 +1,6 @@
 package eu.rekawek.coffeegb.memory;
 
 import eu.rekawek.coffeegb.AddressSpace;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +9,6 @@ import static eu.rekawek.coffeegb.cpu.BitUtils.checkByteArgument;
 import static eu.rekawek.coffeegb.cpu.BitUtils.checkWordArgument;
 
 public class Mmu implements AddressSpace {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Mmu.class);
 
     private static final AddressSpace VOID = new AddressSpace() {
         @Override
@@ -25,7 +21,7 @@ public class Mmu implements AddressSpace {
             if (address < 0 || address > 0xffff) {
                 throw new IllegalArgumentException("Invalid address: " + Integer.toHexString(address));
             }
-            LOG.debug("Writing value {} to void address {}", Integer.toHexString(value), Integer.toHexString(address));
+            System.out.println("Writing value " + Integer.toHexString(value) + " to void address " + Integer.toHexString(address));
         }
 
         @Override
@@ -33,7 +29,7 @@ public class Mmu implements AddressSpace {
             if (address < 0 || address > 0xffff) {
                 throw new IllegalArgumentException("Invalid address: " + Integer.toHexString(address));
             }
-            LOG.debug("Reading value from void address {}", Integer.toHexString(address));
+            System.out.println("Reading value from void address " + Integer.toHexString(address));
             return 0xff;
         }
     };

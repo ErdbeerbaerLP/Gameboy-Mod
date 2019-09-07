@@ -11,8 +11,6 @@ import eu.rekawek.coffeegb.gpu.Lcdc;
 import eu.rekawek.coffeegb.gpu.TileAttributes;
 import eu.rekawek.coffeegb.gui.SwingDisplay;
 import eu.rekawek.coffeegb.memory.MemoryRegisters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +23,6 @@ import static eu.rekawek.coffeegb.gpu.Fetcher.zip;
 
 public class ShowBackground implements Command {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShowBackground.class);
 
     public enum Type {
         WINDOW, BACKGROUND
@@ -249,7 +246,7 @@ public class ShowBackground implements Command {
                     try {
                         wait();
                     } catch (InterruptedException e) {
-                        LOG.error("Can't refresh background window", e);
+                        System.err.println("Can't refresh background window" + e.getMessage());
                         return;
                     }
                 }
