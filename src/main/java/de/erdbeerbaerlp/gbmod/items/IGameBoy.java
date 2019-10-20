@@ -6,6 +6,7 @@ import eu.rekawek.coffeegb.gui.Emulator;
 public interface IGameBoy {
     Emulator getEmulator();
 
+    boolean hasEmulator();
     void initEmulator();
     int getRomIndex();
 

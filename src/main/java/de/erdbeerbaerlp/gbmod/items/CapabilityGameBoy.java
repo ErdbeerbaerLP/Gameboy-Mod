@@ -30,6 +30,11 @@ public class CapabilityGameBoy implements IGameBoy, ICapabilitySerializable<NBTT
     }
 
     @Override
+    public boolean hasEmulator() {
+        return emu != null;
+    }
+
+    @Override
     public int getRomIndex() {
         return this.romIndex;
     }

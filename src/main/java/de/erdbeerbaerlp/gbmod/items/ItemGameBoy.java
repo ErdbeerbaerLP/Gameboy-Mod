@@ -60,13 +60,6 @@ public class ItemGameBoy extends Item {
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
-    @Override
-    public boolean onDroppedByPlayer(ItemStack item, EntityPlayer player) {
-        if (player.world.isRemote) {
-            getCap(item).getEmulator().stop();
-        }
-        return super.onDroppedByPlayer(item, player);
-    }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
