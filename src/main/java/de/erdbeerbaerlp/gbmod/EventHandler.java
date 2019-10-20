@@ -20,7 +20,6 @@ public class EventHandler {
     @SubscribeEvent
     public static void onKey(TickEvent.ClientTickEvent ev) {
         if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode())) {
-            System.out.println(Minecraft.getMinecraft().currentScreen);
             if (Minecraft.getMinecraft().currentScreen == null) {
                 if (Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ItemGameBoy) {
                     ItemGameBoy.getCap(Minecraft.getMinecraft().player.getHeldItemMainhand()).getEmulator().stop();
