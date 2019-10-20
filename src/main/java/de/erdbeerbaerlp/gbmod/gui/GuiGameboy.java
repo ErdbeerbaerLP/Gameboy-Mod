@@ -1,14 +1,19 @@
-package de.erdbeerbaerlp.gbmod;
+package de.erdbeerbaerlp.gbmod.gui;
 
+import de.erdbeerbaerlp.gbmod.items.CapabilityGameBoy;
+import de.erdbeerbaerlp.gbmod.util.ClientOnly;
 import de.erdbeerbaerlp.guilib.components.Button;
 import de.erdbeerbaerlp.guilib.gui.BetterGuiScreen;
 import eu.rekawek.coffeegb.controller.ButtonListener;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
 
 @SuppressWarnings("FieldCanBeLocal")
+@SideOnly(Side.CLIENT)
 public class GuiGameboy extends BetterGuiScreen {
 
     ComponentGameboyScreen screen;
@@ -41,13 +46,13 @@ public class GuiGameboy extends BetterGuiScreen {
         });
         btnStart.setClickListener(()->{
             try {
-
                 gb.getEmulator().run();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
         btnStop.setClickListener(() -> gb.getEmulator().stop());
+
         /*btnSetRom.setClickListener(()->{
             try{
                 gb.cap.getEmulator().switchRom(new File("./config/gameboy-roms/pokemon-debug-yellow/DebugYellow.gbc"));

@@ -1,5 +1,6 @@
 package eu.rekawek.coffeegb.gui;
 
+import de.erdbeerbaerlp.gbmod.items.CapabilityGameBoy;
 import eu.rekawek.coffeegb.Gameboy;
 import eu.rekawek.coffeegb.GameboyOptions;
 import eu.rekawek.coffeegb.controller.Joypad;
@@ -12,10 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
 
 public class Emulator {
 
@@ -24,6 +23,7 @@ public class Emulator {
     private final SerialEndpoint serialEndpoint;
     private final SpeedMode speedMode;
     private final Optional<Console> console;
+    private final CapabilityGameBoy item;
     private GameboyOptions options;
     private Cartridge rom;
     private AudioSystemSoundOutput sound;
@@ -31,26 +31,11 @@ public class Emulator {
     private Gameboy gameboy;
     private JFrame mainWindow;
 
-    public Emulator(String[] args, Properties properties) throws IOException {
-        options = parseArgs(args);
-        rom = new Cartridge(options);
-        speedMode = new SpeedMode();
-        serialEndpoint = SerialEndpoint.NULL_ENDPOINT;
-        console = options.isDebug() ? Optional.of(new Console()) : Optional.empty();
-        console.map(Thread::new).ifPresent(Thread::start);
 
-
-        sound = new AudioSystemSoundOutput();
-        display = new SwingDisplay(SCALE);
-        controller = new SwingController(properties);
-        gameboy = new Gameboy(options, rom, display, controller, sound, serialEndpoint, console);
-
-        console.ifPresent(c -> c.init(gameboy));
-    }
-
-    public Emulator() {
+    public Emulator(CapabilityGameBoy is) {
+        this.item = is;
         final Properties prop = Main.loadProperties();
-        this.options = new GameboyOptions(null);
+        this.options = new GameboyOptions(null, item);
         speedMode = new SpeedMode();
         serialEndpoint = SerialEndpoint.NULL_ENDPOINT;
         console = options.isDebug() ? Optional.of(new Console()) : Optional.empty();
@@ -62,44 +47,6 @@ public class Emulator {
         console.ifPresent(c -> c.init(gameboy));
     }
 
-    private static GameboyOptions parseArgs(String[] args) {
-        if (args.length == 0) {
-            GameboyOptions.printUsage(System.out);
-            return null;
-        }
-        try {
-            return createGameboyOptions(args);
-        } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
-            System.err.println();
-            GameboyOptions.printUsage(System.err);
-            return null;
-        }
-    }
-
-    private static GameboyOptions createGameboyOptions(String[] args) {
-        Set<String> params = new HashSet<>();
-        Set<String> shortParams = new HashSet<>();
-        String romPath = null;
-        for (String a : args) {
-            if (a.startsWith("--")) {
-                params.add(a.substring(2));
-            } else if (a.startsWith("-")) {
-                shortParams.add(a.substring(1));
-            } else {
-                romPath = a;
-            }
-        }
-        if (romPath == null) {
-            throw new IllegalArgumentException("ROM path hasn't been specified");
-        }
-        File romFile = new File(romPath);
-        if (!romFile.exists()) {
-            throw new IllegalArgumentException("The ROM path doesn't exist: " + romPath);
-        }
-        return new GameboyOptions(romFile, params, shortParams);
-    }
-
     public SpeedMode getSpeedControls() {
         return speedMode;
     }
@@ -109,9 +56,6 @@ public class Emulator {
         if (options.isHeadless()) {
             gameboy.run();
         } else {
-            System.setProperty("sun.java2d.opengl", "true");
-
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             SwingUtilities.invokeLater(this::startGui);
         }
     }
@@ -138,7 +82,7 @@ public class Emulator {
     }
 
     public void switchRom(File f, boolean hardSwitch) throws IOException {
-        options = new GameboyOptions(f);
+        options = new GameboyOptions(f, item);
         rom = new Cartridge(options);
         if (gameboy == null || hardSwitch)
             gameboy = new Gameboy(options, rom, display, controller, sound, serialEndpoint, console);

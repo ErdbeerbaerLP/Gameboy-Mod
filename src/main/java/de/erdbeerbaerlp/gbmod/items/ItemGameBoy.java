@@ -1,5 +1,7 @@
-package de.erdbeerbaerlp.gbmod;
+package de.erdbeerbaerlp.gbmod.items;
 
+import de.erdbeerbaerlp.gbmod.Gbmod;
+import de.erdbeerbaerlp.gbmod.gui.GuiGameboy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -12,6 +14,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -26,7 +30,7 @@ public class ItemGameBoy extends Item {
     }
 
     public static CapabilityGameBoy getCap(ItemStack is) {
-        return (CapabilityGameBoy) is.getCapability(Gbmod.CAP_GB, null);
+        return (CapabilityGameBoy) is.getCapability(Gbmod.CAP_CART, null);
     }
 
     @Nullable
@@ -36,6 +40,7 @@ public class ItemGameBoy extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         if(worldIn.isRemote){
             final CapabilityGameBoy cap = getCap(playerIn.getHeldItem(handIn));
@@ -67,9 +72,9 @@ public class ItemGameBoy extends Item {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         final CapabilityGameBoy cap = getCap(stack);
         if (cap == null || cap.getEmulator() == null || cap.getRom() == null) return;
-        tooltip.add(I18n.format("item.gameboy.tooltip.1", flagIn.isAdvanced() ? cap.getRom().getRomFile().getName() : cap.getRom().getRomName()));
+        tooltip.add(I18n.format("item.cartridge.tooltip.1", flagIn.isAdvanced() ? cap.getRom().getRomFile().getName() : cap.getRom().getRomName()));
         if (flagIn.isAdvanced()) {
-            tooltip.add(I18n.format("item.gameboy.tooltip.2", cap.getRomIndex()));
+            tooltip.add(I18n.format("item.cartridge.tooltip.2", cap.getRomIndex()));
         }
     }
 

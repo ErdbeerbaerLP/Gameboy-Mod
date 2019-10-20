@@ -1,5 +1,7 @@
-package de.erdbeerbaerlp.gbmod;
+package de.erdbeerbaerlp.gbmod.items;
 
+import de.erdbeerbaerlp.gbmod.Gbmod;
+import de.erdbeerbaerlp.gbmod.util.ROM;
 import eu.rekawek.coffeegb.gui.Emulator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,13 +15,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTTagCompound> {
+public class CapabilityGameBoy implements IGameBoy, ICapabilitySerializable<NBTTagCompound> {
     private Emulator emu;
     private int romIndex = -1;
     private ROM rom;
 
     public void initEmulator() {
-        emu = new Emulator();
+        emu = new Emulator(this);
         Gbmod.emus.add(this);
     }
     @Override
@@ -39,6 +41,7 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
 
     @Override
     public void setRom(int rom) {
+        if (FMLCommonHandler.instance().getSide().isServer()) return;
         if (rom >= Gbmod.LOADED_ROMS.size() || rom < 0)
             rom = 0;
         this.romIndex = rom;
@@ -52,6 +55,7 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
 
     @Override
     public void nextRom() {
+        if (FMLCommonHandler.instance().getSide().isServer()) return;
         romIndex++;
         if (romIndex >= Gbmod.LOADED_ROMS.size())
             romIndex = 0;
@@ -62,6 +66,7 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
             e.printStackTrace();
         }
     }
+
 
     @Override
     public NBTTagCompound serializeNBT() {
@@ -79,21 +84,22 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == Gbmod.CAP_GB;
+        return capability == Gbmod.CAP_CART;
     }
 
     @Nullable
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == Gbmod.CAP_GB)
-            return Gbmod.CAP_GB.cast(this);
+        if (capability == Gbmod.CAP_CART)
+            return Gbmod.CAP_CART.cast(this);
         return null;
     }
 
-    public static class CapabilityGameBoyStorage implements Capability.IStorage<IGameboy> {
+
+    public static class CapabilityCartridgeStorage implements Capability.IStorage<IGameBoy> {
         @Nullable
         @Override
-        public NBTBase writeNBT(Capability<IGameboy> capability, IGameboy instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<IGameBoy> capability, IGameBoy instance, EnumFacing side) {
             final NBTTagCompound nbt = new NBTTagCompound();
             nbt.setInteger("romIndex", instance.getRomIndex());
             return nbt;
@@ -101,8 +107,8 @@ public class CapabilityGameBoy implements IGameboy, ICapabilitySerializable<NBTT
 
 
         @Override
-        public void readNBT(Capability<IGameboy> capability, IGameboy instance, EnumFacing side, NBTBase nbt) {
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+        public void readNBT(Capability<IGameBoy> capability, IGameBoy instance, EnumFacing side, NBTBase nbt) {
+            if (FMLCommonHandler.instance().getSide().isClient())
                 instance.initEmulator();
             instance.setRom(((NBTTagCompound) nbt).getInteger("romIndex"));
         }

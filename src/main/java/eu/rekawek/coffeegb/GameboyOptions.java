@@ -1,5 +1,7 @@
 package eu.rekawek.coffeegb;
 
+import de.erdbeerbaerlp.gbmod.items.CapabilityGameBoy;
+
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -20,12 +22,15 @@ public class GameboyOptions {
     private final boolean debug;
 
     private final boolean headless;
+    private final CapabilityGameBoy item;
 
-    public GameboyOptions(File romFile) {
-        this(romFile, Collections.emptyList(), Collections.emptyList());
+    public GameboyOptions(File romFile, CapabilityGameBoy is) {
+        this(romFile, Collections.emptyList(), Collections.emptyList(), is);
+
     }
 
-    public GameboyOptions(File romFile, Collection<String> params, Collection<String> shortParams) {
+    public GameboyOptions(File romFile, Collection<String> params, Collection<String> shortParams, CapabilityGameBoy is) {
+        item = is;
         this.romFile = romFile;
         this.forceDmg = params.contains("force-dmg") || shortParams.contains("d");
         this.forceCgb = params.contains("force-cgb") || shortParams.contains("c");
@@ -79,4 +84,7 @@ public class GameboyOptions {
         stream.println("      --headless                 Start in the headless mode");
     }
 
+    public CapabilityGameBoy getItemCap() {
+        return item;
+    }
 }

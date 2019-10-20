@@ -1,14 +1,19 @@
-package de.erdbeerbaerlp.gbmod;
+package de.erdbeerbaerlp.gbmod.gui;
 
+import de.erdbeerbaerlp.gbmod.items.CapabilityGameBoy;
 import de.erdbeerbaerlp.guilib.components.GuiComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ComponentGameboyScreen extends GuiComponent {
 
     private final int imgwidth, imgheight;
     final DynamicTexture img;
     private CapabilityGameBoy gb;
+
     @SuppressWarnings("SameParameterValue")
     protected ComponentGameboyScreen(int x, int y) {
         super(x, y, 0, 0);
@@ -37,6 +42,7 @@ public class ComponentGameboyScreen extends GuiComponent {
         Minecraft.getMinecraft().renderEngine.bindTexture(Minecraft.getMinecraft().renderEngine.getDynamicTextureLocation("gbmod_gameboyScreen", img));
         drawModalRectWithCustomSizedTexture(getX() - imgwidth / 2, getY() - imgheight / 2, 0, 0, imgwidth, imgheight, imgwidth, imgheight);
     }
+
     /**
      * Called on mouse click
      *

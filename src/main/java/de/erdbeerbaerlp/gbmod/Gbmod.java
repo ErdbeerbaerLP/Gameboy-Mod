@@ -1,8 +1,18 @@
 package de.erdbeerbaerlp.gbmod;
 
+import de.erdbeerbaerlp.gbmod.commands.CommandLink;
+import de.erdbeerbaerlp.gbmod.items.CapabilityGameBoy;
+import de.erdbeerbaerlp.gbmod.items.IGameBoy;
+import de.erdbeerbaerlp.gbmod.items.ItemGameBoy;
+import de.erdbeerbaerlp.gbmod.network.PacketGBLink;
+import de.erdbeerbaerlp.gbmod.util.ClientOnly;
+import de.erdbeerbaerlp.gbmod.util.ROM;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -12,7 +22,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.io.FilenameUtils;
@@ -21,6 +34,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Mod(
         modid = Gbmod.MOD_ID,
@@ -34,23 +48,28 @@ public class Gbmod {
     public static final String MOD_NAME = "GameBoy Mod";
     public static final String VERSION = "1.0.0";
     private static final File ROMS_DIR = new File("./config/gameboy-roms");
-    static final List<ROM> LOADED_ROMS = new ArrayList<>();
-    public static final ResourceLocation CAP_GB_RL = new ResourceLocation(MOD_ID, "capability.gameboy");
+    public static final List<ROM> LOADED_ROMS = new ArrayList<>();
+    public static final ResourceLocation CAP_GB_RL = new ResourceLocation(MOD_ID, "capability.cartridge");
 
     public Gbmod(){
         reloadRoms();
     }
 
-    static final ArrayList<CapabilityGameBoy> emus = new ArrayList<>();
-    static final TabGameboy tab = new TabGameboy();
+    public static final ArrayList<CapabilityGameBoy> emus = new ArrayList<>();
+    public static final TabGameboy tab = new TabGameboy();
     /**
      * This is the instance of your mod as created by Forge. It will never be null.
      */
     @Mod.Instance(MOD_ID)
     public static Gbmod INSTANCE;
+    public static final SimpleNetworkWrapper Channel = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
     //Capabilities
-    @CapabilityInject(IGameboy.class)
-    public static Capability<IGameboy> CAP_GB = null;
+    @CapabilityInject(IGameBoy.class)
+    public static Capability<IGameBoy> CAP_CART = null;
+
+
+
+
 
     /**
      * Reloads the rom directory...
@@ -77,11 +96,16 @@ public class Gbmod {
         System.out.println("Loaded "+LOADED_ROMS.size()+" ROMs");
     }
 
+    public UUID lastLinkRequest, currentLink;
+
     /**
      * This is the second initialization event. Register custom recipes
      */
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+
+        Channel.registerMessage(PacketGBLink.PacketGBLinkHandler.class, PacketGBLink.class, 0, Side.CLIENT);
+
     }
 
     /**
@@ -92,6 +116,10 @@ public class Gbmod {
 
     }
 
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandLink());
+    }
     static void unloadAllEmus() {
         emus.forEach((cap) -> {
             cap.getEmulator().stop();
@@ -110,16 +138,6 @@ public class Gbmod {
     }
 
     /**
-     * Forge will automatically look up and bind items to the fields in this class
-     * based on their registry name.
-     */
-    @GameRegistry.ObjectHolder(MOD_ID)
-    public static class Items {
-        public static final ItemGameBoy itemGameBoy = null;
-        public static final Cartridge cartridge = null;
-    }
-
-    /**
      * This is the first initialization event. Register tile entities here.
      * The registry events below will have fired prior to entry to this method.
      */
@@ -129,7 +147,16 @@ public class Gbmod {
             ClientOnly.registerKeybinds();
         }
         //noinspection deprecation
-        CapabilityManager.INSTANCE.register(IGameboy.class, new CapabilityGameBoy.CapabilityGameBoyStorage(), CapabilityGameBoy.class);
+        CapabilityManager.INSTANCE.register(IGameBoy.class, new CapabilityGameBoy.CapabilityCartridgeStorage(), CapabilityGameBoy.class);
+    }
+
+    /**
+     * Forge will automatically look up and bind items to the fields in this class
+     * based on their registry name.
+     */
+    @GameRegistry.ObjectHolder(MOD_ID)
+    public static class Items {
+        public static final ItemGameBoy gameboy = null;
     }
 
     /**
@@ -142,7 +169,7 @@ public class Gbmod {
          */
         @SubscribeEvent
         public static void addItems(RegistryEvent.Register<Item> event) {
-            event.getRegistry().registerAll(new ItemGameBoy(), new Cartridge());
+            event.getRegistry().registerAll(new ItemGameBoy());
         }
 
         /**
@@ -150,6 +177,15 @@ public class Gbmod {
          */
         @SubscribeEvent
         public static void addBlocks(RegistryEvent.Register<Block> event) {
+        }
+
+        @SubscribeEvent
+        public static void registerRenders(ModelRegistryEvent event) {
+            registerRender(Items.gameboy);
+        }
+
+        private static void registerRender(Item item) {
+            ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
         }
 
     }

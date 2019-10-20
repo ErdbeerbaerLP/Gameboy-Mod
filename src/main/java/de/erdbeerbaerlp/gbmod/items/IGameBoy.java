@@ -1,8 +1,9 @@
-package de.erdbeerbaerlp.gbmod;
+package de.erdbeerbaerlp.gbmod.items;
 
+import de.erdbeerbaerlp.gbmod.util.ROM;
 import eu.rekawek.coffeegb.gui.Emulator;
 
-public interface IGameboy {
+public interface IGameBoy {
     Emulator getEmulator();
 
     void initEmulator();

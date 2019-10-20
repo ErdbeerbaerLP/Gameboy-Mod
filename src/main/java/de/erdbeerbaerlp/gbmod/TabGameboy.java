@@ -10,6 +10,6 @@ public class TabGameboy extends CreativeTabs {
 
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(Gbmod.Items.itemGameBoy);
+        return new ItemStack(Gbmod.Items.gameboy);
     }
 }

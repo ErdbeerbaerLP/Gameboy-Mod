@@ -1,4 +1,4 @@
-package de.erdbeerbaerlp.gbmod;
+package de.erdbeerbaerlp.gbmod.util;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -24,7 +24,7 @@ public class ClientOnly {
 
     public static final KeyBinding keyGBSelect = new KeyBinding("key.gb.select", Keyboard.KEY_RSHIFT, "category.gameboy");
 
-    static void registerKeybinds() {
+    public static void registerKeybinds() {
         ClientRegistry.registerKeyBinding(keyGBA);
         ClientRegistry.registerKeyBinding(keyGBB);
         ClientRegistry.registerKeyBinding(keyGBDown);

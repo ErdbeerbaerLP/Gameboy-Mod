@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Main {
-
-    public static void main(String[] args) throws Exception {
-        System.setProperty("apple.awt.application.name", "Coffee GB");
-        new Emulator(args, loadProperties()).run();
-    }
-
+    /*
+        public static void main(String[] args) throws Exception {
+            System.setProperty("apple.awt.application.name", "Coffee GB");
+            new Emulator(args, loadProperties()).run();
+        }
+    */
     public static Properties loadProperties() {
         Properties props = new Properties();
         File propFile = new File(new File(System.getProperty("user.home")), ".coffeegb.properties");

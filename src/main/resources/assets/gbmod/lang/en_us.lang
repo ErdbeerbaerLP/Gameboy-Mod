@@ -8,10 +8,17 @@ key.gb.start=Start Button
 key.gb.select=Select Button
 category.gameboy=Gameboy
 
+command.link=/link <player>
+command.link.request=%1$s wants to link thier GameBoy with yours. Type /link %1$s to accept. This request will be valid for 1 minute
+command.link.noPlayer=Can not find player %s
+
 itemGroup.tabGameboy=Gameboy Items
 
 item.cartridge-unknown.name=Unknown Cartridge
 
 item.gameboy.name=Gameboy
-item.gameboy.tooltip.1=Rom: %s
-item.gameboy.tooltip.2=Rom Index: %s
+item.cartridge.tooltip.1=Rom: %s
+item.cartridge.tooltip.2=Rom Index: %s
+item.cartridge.name=Cartridge
+command.link.invalidArgs=Invalid arguments. Required: 1
+command.link.success=Linked successfully

@@ -1,4 +1,4 @@
-package de.erdbeerbaerlp.gbmod;
+package de.erdbeerbaerlp.gbmod.util;
 
 import eu.rekawek.coffeegb.memory.cart.Cartridge;
 import org.apache.commons.io.FilenameUtils;
